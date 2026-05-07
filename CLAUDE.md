@@ -52,3 +52,20 @@ For each task:
 4. Add or update tests where possible.
 5. Run tests/lint/type checks.
 6. Update docs if behavior or architecture changes.
+
+## Documentation Maintenance (Non-Negotiable)
+**After every discussion or code change, update docs immediately — never defer.**
+
+Rules:
+- Architecture changed → update `docs/ARCHITECTURE.md`
+- Product behaviour changed → update `docs/PRODUCT_SPEC.md`
+- Decision made or assumption recorded → add to `docs/DECISIONS.md`
+- Execution plan changed → update `docs/EXECUTION_PLAN.md`
+- Reliability/battery/background behaviour changed → update `docs/RELIABILITY.md`
+- Privacy or security concern changed → update `docs/PRIVACY_SECURITY.md`
+- Testing strategy changed → update `docs/TESTING.md`
+- **Any change at all** → append a dated entry to `docs/CHANGELOG.md`
+
+Keep each doc's `Last updated:` header current with today's date.
+
+Versioning approach: `docs/CHANGELOG.md` is the authoritative history. Each entry is dated and describes what changed, why, and what was removed. This is the first place to look when context is lost between sessions.

@@ -7,7 +7,11 @@ struct MapView: View {
     @EnvironmentObject var locationManager: LocationManager
     @EnvironmentObject var tripMonitor: TripMonitor
 
-    @State private var position: MapCameraPosition = .automatic
+    @State private var position: MapCameraPosition = .region(MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 1.3521, longitude: 103.8198),
+        latitudinalMeters: 1500,
+        longitudinalMeters: 1500
+    ))
 
     var body: some View {
         Map(position: $position) {
