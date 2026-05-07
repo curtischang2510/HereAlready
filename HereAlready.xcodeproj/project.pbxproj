@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6F3E3C3AE726B16985F20199 /* Pods_HereAlready.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 586404CFC8580A2124F27DAD /* Pods_HereAlready.framework */; };
+		E8134EB02FAB5B7B009D6FED /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = E8134EAF2FAB5B7B009D6FED /* CLAUDE.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E8276AEA2DD84B3C00BD019D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,24 +29,52 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		09773FB43F60569D2B827E6B /* Pods-HereAlready.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HereAlready.release.xcconfig"; path = "Target Support Files/Pods-HereAlready/Pods-HereAlready.release.xcconfig"; sourceTree = "<group>"; };
+		3808C92BD57EECC6DE0CB44F /* Pods-HereAlready.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HereAlready.debug.xcconfig"; path = "Target Support Files/Pods-HereAlready/Pods-HereAlready.debug.xcconfig"; sourceTree = "<group>"; };
+		586404CFC8580A2124F27DAD /* Pods_HereAlready.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HereAlready.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8134EAF2FAB5B7B009D6FED /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		E8276AD92DD84B3A00BD019D /* HereAlready.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HereAlready.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8276AE92DD84B3C00BD019D /* HereAlreadyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HereAlreadyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8276AF32DD84B3C00BD019D /* HereAlreadyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HereAlreadyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E8D8B07C2DEC211C00C43DB6 /* Exceptions for "HereAlready" folder in "HereAlready" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E8276AD82DD84B3A00BD019D /* HereAlready */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		E8134EB12FAB816C009D6FED /* docs */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
 		E8276ADB2DD84B3A00BD019D /* HereAlready */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E8D8B07C2DEC211C00C43DB6 /* Exceptions for "HereAlready" folder in "HereAlready" target */,
+			);
 			path = HereAlready;
 			sourceTree = "<group>";
 		};
 		E8276AEC2DD84B3C00BD019D /* HereAlreadyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = HereAlreadyTests;
 			sourceTree = "<group>";
 		};
 		E8276AF62DD84B3C00BD019D /* HereAlreadyUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = HereAlreadyUITests;
 			sourceTree = "<group>";
 		};
@@ -52,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F3E3C3AE726B16985F20199 /* Pods_HereAlready.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,13 +106,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		34B9C3E4014327EE4A6B9FC7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				586404CFC8580A2124F27DAD /* Pods_HereAlready.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		69E99383BAC36ACC18880733 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3808C92BD57EECC6DE0CB44F /* Pods-HereAlready.debug.xcconfig */,
+				09773FB43F60569D2B827E6B /* Pods-HereAlready.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		E8276AD02DD84B3A00BD019D = {
 			isa = PBXGroup;
 			children = (
+				E8134EB12FAB816C009D6FED /* docs */,
+				E8134EAF2FAB5B7B009D6FED /* CLAUDE.md */,
 				E8276ADB2DD84B3A00BD019D /* HereAlready */,
 				E8276AEC2DD84B3C00BD019D /* HereAlreadyTests */,
 				E8276AF62DD84B3C00BD019D /* HereAlreadyUITests */,
 				E8276ADA2DD84B3A00BD019D /* Products */,
+				69E99383BAC36ACC18880733 /* Pods */,
+				34B9C3E4014327EE4A6B9FC7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +154,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E8276AFD2DD84B3C00BD019D /* Build configuration list for PBXNativeTarget "HereAlready" */;
 			buildPhases = (
+				0E83A4ACABCD18581CB111F4 /* [CP] Check Pods Manifest.lock */,
 				E8276AD52DD84B3A00BD019D /* Sources */,
 				E8276AD62DD84B3A00BD019D /* Frameworks */,
 				E8276AD72DD84B3A00BD019D /* Resources */,
@@ -108,11 +164,10 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				E8134EB12FAB816C009D6FED /* docs */,
 				E8276ADB2DD84B3A00BD019D /* HereAlready */,
 			);
 			name = HereAlready;
-			packageProductDependencies = (
-			);
 			productName = HereAlready;
 			productReference = E8276AD92DD84B3A00BD019D /* HereAlready.app */;
 			productType = "com.apple.product-type.application";
@@ -134,8 +189,6 @@
 				E8276AEC2DD84B3C00BD019D /* HereAlreadyTests */,
 			);
 			name = HereAlreadyTests;
-			packageProductDependencies = (
-			);
 			productName = HereAlreadyTests;
 			productReference = E8276AE92DD84B3C00BD019D /* HereAlreadyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -157,8 +210,6 @@
 				E8276AF62DD84B3C00BD019D /* HereAlreadyUITests */,
 			);
 			name = HereAlreadyUITests;
-			packageProductDependencies = (
-			);
 			productName = HereAlreadyUITests;
 			productReference = E8276AF32DD84B3C00BD019D /* HereAlreadyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -212,6 +263,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8134EB02FAB5B7B009D6FED /* CLAUDE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +282,31 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0E83A4ACABCD18581CB111F4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HereAlready-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E8276AD52DD84B3A00BD019D /* Sources */ = {
@@ -306,7 +383,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -369,7 +446,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -390,6 +467,7 @@
 		};
 		E8276AFE2DD84B3C00BD019D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3808C92BD57EECC6DE0CB44F /* Pods-HereAlready.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -398,6 +476,9 @@
 				DEVELOPMENT_ASSET_PATHS = "\"HereAlready/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HereAlready/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -418,6 +499,7 @@
 		};
 		E8276AFF2DD84B3C00BD019D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09773FB43F60569D2B827E6B /* Pods-HereAlready.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -426,6 +508,9 @@
 				DEVELOPMENT_ASSET_PATHS = "\"HereAlready/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HereAlready/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
