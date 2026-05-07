@@ -28,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		027093CF7DA74CEB8B128DC8 /* Singapore.gpx */ = {isa = PBXFileReference; lastKnownFileType = text; path = Singapore.gpx; sourceTree = SOURCE_ROOT; };
 		E8134EAF2FAB5B7B009D6FED /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		E8276AD92DD84B3A00BD019D /* HereAlready.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HereAlready.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8276AE92DD84B3C00BD019D /* HereAlreadyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HereAlreadyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,8 +48,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E8134EB12FAB816C009D6FED /* docs */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = docs;
 			sourceTree = "<group>";
 		};
@@ -62,15 +61,11 @@
 		};
 		E8276AEC2DD84B3C00BD019D /* HereAlreadyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = HereAlreadyTests;
 			sourceTree = "<group>";
 		};
 		E8276AF62DD84B3C00BD019D /* HereAlreadyUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = HereAlreadyUITests;
 			sourceTree = "<group>";
 		};
@@ -101,23 +96,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		69E99383BAC36ACC18880733 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		E8276AD02DD84B3A00BD019D = {
 			isa = PBXGroup;
 			children = (
 				E8134EB12FAB816C009D6FED /* docs */,
 				E8134EAF2FAB5B7B009D6FED /* CLAUDE.md */,
+				027093CF7DA74CEB8B128DC8 /* Singapore.gpx */,
 				E8276ADB2DD84B3A00BD019D /* HereAlready */,
 				E8276AEC2DD84B3C00BD019D /* HereAlreadyTests */,
 				E8276AF62DD84B3C00BD019D /* HereAlreadyUITests */,
 				E8276ADA2DD84B3A00BD019D /* Products */,
-				69E99383BAC36ACC18880733 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
