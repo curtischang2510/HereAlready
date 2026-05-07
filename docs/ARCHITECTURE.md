@@ -1,104 +1,85 @@
 # Architecture: HereAlready
 
+Last updated: 2026-05-07
+
 ## Current Implementation
 
 ### Entry Point
-- `HereAlreadyApp.swift` — `@main` SwiftUI app struct. Attaches `AppDelegate` via `@UIApplicationDelegateAdaptor`.
-- `AppDelegate.swift` — Initialises Google Maps SDK with an API key at app launch.
+- `HereAlreadyApp.swift` — `@main` SwiftUI app struct. Owns `AppContainer` as a `@StateObject` and injects `locationManager` and `tripMonitor` via `.environmentObject`.
+- `AppDelegate.swift` — Minimal; no third-party SDK init.
+- `AppContainer.swift` — App-scoped service container. Instantiates `LocationManager` and `TripMonitor`; wires the dependency between them.
 
-### Current File Breakdown
+### File Breakdown
 
 | File | Role |
 |------|------|
-| `HereAlreadyApp.swift` | App entry point |
-| `AppDelegate.swift` | Google Maps SDK init |
-| `ContentView.swift` | Root view + sliding panel layout |
-| `Map.swift` | Google Maps view + owns `LocationManager` |
+| `HereAlreadyApp.swift` | App entry point, service injection |
+| `AppDelegate.swift` | Minimal UIKit delegate |
+| `AppContainer.swift` | Service container (LocationManager + TripMonitor) |
+| `ContentView.swift` | Root view + three-state sliding panel layout |
+| `Map.swift` | MapKit `Map` view, `VanMarkerView`, `DestinationMarkerView` |
 | `SearchPage.swift` | Destination search panel UI |
-| `SearchViewModel.swift` | Search text/focus state, hardcoded place list |
-| `LocationManager.swift` | `CLLocationManager` wrapper |
+| `SearchViewModel.swift` | `MKLocalSearch`, selected place, recent searches persistence |
+| `LocationManager.swift` | `CLLocationManager` wrapper, geofencing, Combine publishers |
+| `TripMonitor.swift` | Trip lifecycle, distance calculation, alert trigger |
 
 ---
 
-## Problems with Current Architecture
-
-### 1. `LocationManager` is owned by `Map`
-`LocationManager` is a `@StateObject` inside the `Map` view. This means:
-- Only the map has access to location data.
-- Trip monitoring (which needs to compare location to destination) cannot access it without prop-drilling or a global.
-- Location updates stop if `Map` disappears from the view tree.
-
-**Fix:** Lift `LocationManager` to the app level — either as a `@StateObject` on `HereAlreadyApp` or injected via the environment.
-
-### 2. No trip state exists
-There is no object responsible for: holding the destination, threshold, active monitoring state, or firing alerts. This needs to be a dedicated `TripMonitor` service, not logic scattered across views.
-
-### 3. `SearchViewModel` has no real data
-Place search is hardcoded to `["NUS", "NTU", "SMU"]`. The destination coordinate is never stored — selecting a place only updates a text field.
-
-### 4. Google Maps SDK may be unnecessary
-See the **Map SDK Decision** section below.
-
----
-
-## Target Architecture
+## Service Graph
 
 ```
 HereAlreadyApp
-├── LocationManager          (@StateObject, app-scoped, injected via environment)
-├── TripMonitor              (@StateObject, app-scoped, observes LocationManager)
-│   ├── destination: CLLocationCoordinate2D?
-│   ├── thresholdMetres: Double
-│   ├── isActive: Bool
-│   └── hasAlerted: Bool
-└── ContentView
-    ├── MapView              (reads LocationManager from environment)
-    └── SearchPage
-        └── SearchViewModel  (manages search text + selected place coordinate)
+└── AppContainer (@StateObject)
+    ├── LocationManager  → injected as @EnvironmentObject
+    └── TripMonitor      → injected as @EnvironmentObject
+            │
+            └── subscribes to LocationManager.$lastKnownLocation (Combine)
+                subscribes to LocationManager.regionEnteredPublisher (Combine)
+
+ContentView
+├── MapView              reads LocationManager from environment
+└── SearchPage
+    └── SearchViewModel  (@StateObject, owned by SearchPage)
+        └── persists RecentSearch list to UserDefaults
 ```
 
-### Key principles
-- Location is app-level state, not view state.
-- `TripMonitor` is the single source of truth for trip lifecycle.
-- Views observe published state; they do not own services.
-- Alerts are triggered by `TripMonitor`, not by views.
+---
+
+## Key Design Decisions
+
+### MapKit (not Google Maps)
+Replaced Google Maps SDK and CocoaPods with system MapKit. No API key, no dependency manager, smaller binary. `MKLocalSearch` handles destination search adequately for MVP.
+
+### Location scope
+`LocationManager` is app-scoped (owned by `AppContainer`), not view-scoped. This ensures location updates are available to `TripMonitor` regardless of the view tree state.
+
+### TripMonitor distance seeding
+On `start()`, `TripMonitor` immediately seeds `distanceToDestination` using `locationManager.lastKnownLocation`. Without this, the Combine subscription only fires on *new* location events, causing the UI to hang on "Calculating distance…" if the device hasn't moved since the last update.
+
+### Accuracy filter
+`TripMonitor.update()` rejects only locations where `horizontalAccuracy < 0` (invalid fix). The original upper-bound guard (`<= 100m`) was removed because simulator GPS and low-signal real-device readings often report higher accuracy values that are still sufficient for coarse trip-distance alerts.
+
+### Background monitoring
+`CLCircularRegion` geofencing is the primary alert mechanism for background/terminated state — battery-efficient and works even when the app is killed. `startUpdatingLocation` (with `distanceFilter = 20m`) drives live foreground map display only.
 
 ---
 
-## Map SDK Decision
+## Recent Searches Persistence
 
-**Open question:** Google Maps SDK vs MapKit.
+`SearchViewModel` maintains a `recentSearches: [RecentSearch]` list (max 10) persisted to `UserDefaults`.
 
-| | Google Maps SDK | MapKit |
-|--|----------------|--------|
-| Cost | Free up to quota, then paid | Free, no quota |
-| API key required | Yes | No |
-| Place search | Google Places API (excellent) | `MKLocalSearch` (good enough for MVP) |
-| Map quality | Generally better globally | Good, improves yearly |
-| Privacy | Queries go to Google servers | On-device + Apple servers |
-| Binary size | ~30MB added | 0 (system framework) |
-| Background monitoring | N/A (map only) | N/A (map only) |
-
-**Recommendation:** Switch to MapKit for MVP. `MKLocalSearch` handles destination search adequately. This eliminates the API key, the CocoaPods dependency, and the `AppDelegate` SDK init. If map quality becomes an issue post-MVP, switching back is straightforward.
+`RecentSearch` is a lightweight `Codable` struct storing only what `MKMapItem` cannot: name, subtitle, and coordinate. It is shown in the search panel when the field is focused but empty. Selecting a recent search repopulates the field and selects the destination, identical to a live search result.
 
 ---
 
-## Background Monitoring Approach
+## Dependencies
 
-Use `CLCircularRegion` geofencing as the primary alert mechanism:
-- Battery-efficient (no continuous GPS polling).
-- Works when app is backgrounded or terminated (iOS relaunches the app on boundary crossing).
-- Accuracy is sufficient for 300m+ thresholds.
+| Framework | Purpose |
+|-----------|---------|
+| MapKit | Map rendering, `MKLocalSearch` |
+| CoreLocation | GPS, geofencing |
+| Combine | Reactive location updates |
+| UserNotifications | Local notifications |
+| SwiftUI | UI |
 
-Use `startUpdatingLocation` (with `distanceFilter = 20`) only while the app is foregrounded, to drive the live map display.
-
----
-
-## Dependencies (Current)
-
-| Pod | Version | Purpose | Keep? |
-|-----|---------|---------|-------|
-| `GoogleMaps` | 9.4.0 | Map rendering | Remove if switching to MapKit |
-| `Google-Maps-iOS-Utils` | 6.1.0 | Map utilities | Remove if switching to MapKit |
-
-CoreLocation — system framework, no change.
+No CocoaPods. No third-party dependencies.

@@ -49,6 +49,11 @@ class TripMonitor: ObservableObject {
         )
         locationManager.requestAlwaysAuthorization()
         requestNotificationPermission()
+        // Seed distance immediately — Combine only fires on new events,
+        // so if location hasn't changed since start we'd hang on "Calculating…"
+        if let current = locationManager.lastKnownLocation {
+            update(location: current)
+        }
     }
 
     func stop() {
@@ -62,8 +67,8 @@ class TripMonitor: ObservableObject {
     /// Called directly by Combine subscription or by tests.
     func update(location: CLLocation) {
         guard isActive, let dest = destination else { return }
-        // Filter out inaccurate readings (e.g. underground, poor signal)
-        guard location.horizontalAccuracy >= 0, location.horizontalAccuracy <= 100 else { return }
+        // Negative accuracy means invalid fix; large values are still usable for coarse trip alerts.
+        guard location.horizontalAccuracy >= 0 else { return }
 
         let destLocation = CLLocation(latitude: dest.latitude, longitude: dest.longitude)
         let distance = location.distance(from: destLocation)

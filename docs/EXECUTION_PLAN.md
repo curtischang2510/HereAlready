@@ -1,103 +1,78 @@
 # Execution Plan: HereAlready MVP
 
-## Current State (as of May 2026)
+Last updated: 2026-05-07
+
+## Current State
 
 | Feature | Status |
 |---------|--------|
-| Map rendering | Done (Google Maps — may be replaced) |
+| Map rendering (MapKit) | Done |
 | User location tracking (foreground) | Done |
-| Sliding panel UI | Done |
-| Destination search UI | Done (hardcoded data) |
-| Real place search | Not started |
-| Distance calculation | Not started |
-| Distance threshold picker | Not started |
-| Trip start/stop control | Not started |
-| Alert / notification trigger | Not started |
-| Alert deduplication | Not started |
-| Background monitoring (geofencing) | Not started |
-| Permission denial handling (UI) | Partial (logic only) |
+| Sliding panel UI (three states) | Done |
+| Real place search (MKLocalSearch) | Done |
+| Destination pin on map | Done |
+| Distance threshold picker | Done |
+| Trip start/stop control | Done |
+| Distance calculation | Done |
+| Notification/alert trigger | Done |
+| Alert deduplication | Done |
+| Background monitoring (geofencing) | Done |
+| Permission denial handling (UI overlay) | Done |
+| Recent searches (top 10, persisted) | In progress |
+| Trip state persistence (UserDefaults) | Not started |
+| In-app foreground alert banner | Not started |
 
 ---
 
-## Phase 0 — Architecture Cleanup (Before Any New Features)
+## Phase 0 — Architecture Cleanup ✅
 
-**Goal:** Fix structural problems before building on top of them. The existing code is a good sketch but needs restructuring.
+All tasks complete. MapKit replaced Google Maps; `LocationManager` lifted to app scope; `TripMonitor` created; `SearchViewModel` stores real `MKMapItem`.
+
+---
+
+## Phase 1 — Real Destination Search ✅
+
+`MKLocalSearch` with 300ms debounce. Selected `MKMapItem` stored on `SearchViewModel`. Destination pin shown on map when trip is active.
+
+---
+
+## Phase 2 — Trip Configuration & Start/Stop ✅
+
+Threshold picker (300m / 500m / 1km). Start/Stop buttons wired to `TripMonitor`. Live distance display with numeric transition animation.
+
+---
+
+## Phase 3 — Alert Trigger ✅
+
+Distance calculated on each `CLLocation` update via `CLLocation.distance(from:)`. Alert fires once per trip (`hasAlerted` flag). `UNUserNotificationCenter` local notification delivered immediately on threshold crossing.
+
+---
+
+## Phase 4 — Background Monitoring ✅
+
+`CLCircularRegion` geofencing registered on trip start. `didEnterRegion` delegate fires `regionEnteredPublisher` → `TripMonitor.fireAlert()`. `UIBackgroundModes: location` in `Info.plist`. `requestAlwaysAuthorization` called on trip start.
+
+---
+
+## Phase 5 — Recent Searches
+
+**Goal:** Surface the user's last 10 destinations so they don't have to retype common routes.
 
 Tasks:
-1. **Decide on map SDK** — MapKit (recommended) or keep Google Maps. See `ARCHITECTURE.md`. If switching to MapKit: remove Pods, delete `AppDelegate.swift`, replace `GoogleMapsViewRepresentable` with `Map` from `MapKit`.
-2. **Lift `LocationManager` to app scope** — Move it from inside `Map` view to `HereAlreadyApp` as a `@StateObject`, inject via `.environmentObject`.
-3. **Create `TripMonitor`** — New `ObservableObject` service holding destination, threshold, active state, and alert logic. Inject via `.environmentObject` alongside `LocationManager`.
-4. **Update `SearchViewModel`** to store a selected coordinate (not just a string) when a place is chosen.
-
-Deliverable: app still looks and behaves the same, but services live at the right scope.
-
----
-
-## Phase 1 — Real Destination Search
-
-**Goal:** Replace hardcoded place list with real search results.
-
-If using **MapKit:**
-- Use `MKLocalSearch` with `MKLocalSearchRequest` on `searchText` changes (debounce ~300ms).
-- Store the selected `MKMapItem` (contains coordinate) on `SearchViewModel`.
-- Drop a pin on the map at the selected destination.
-
-If using **Google Maps:**
-- Add `GooglePlaces` pod.
-- Call `GMSPlacesClient.findAutocompletePredictions`.
-- Store selected `GMSPlace` coordinate.
+1. Add `RecentSearch` Codable struct (name, subtitle, coordinate).
+2. Add `recentSearches: [RecentSearch]` to `SearchViewModel`, load from UserDefaults on init.
+3. On destination select, prepend to list, cap at 10, persist to UserDefaults.
+4. Show recent searches section in `SearchPage` when field is focused and empty.
+5. Tapping a recent search selects it as destination (same path as live results).
 
 ---
 
-## Phase 2 — Trip Configuration & Start/Stop
-
-**Goal:** Let the user configure a threshold and start monitoring.
+## Phase 6 — Remaining Polish (Not Started)
 
 Tasks:
-1. Add a distance threshold picker to `SearchPage` (segmented: 300m / 500m / 1km).
-2. Add a "Start Alert" button (visible once destination is selected).
-3. Wire button to `TripMonitor.start(destination:threshold:)`.
-4. Add a "Stop" button that calls `TripMonitor.stop()`.
-5. Show current distance to destination while trip is active (updated on each location update).
-
----
-
-## Phase 3 — Alert Trigger (Foreground)
-
-**Goal:** Alert fires when user is within threshold, while app is open.
-
-Tasks:
-1. In `TripMonitor`, on each `LocationManager` update, compute `CLLocation.distance(from:)`.
-2. If distance ≤ threshold and `!hasAlerted`: set `hasAlerted = true`, fire alert.
-3. Foreground alert: `UIAlertController` or a SwiftUI sheet/banner + haptic feedback.
-4. Request `UNUserNotificationCenter` authorization for the background case.
-
----
-
-## Phase 4 — Background Monitoring (Geofencing)
-
-**Goal:** Alert fires when app is backgrounded or screen is locked.
-
-Tasks:
-1. Add `NSLocationAlwaysAndWhenInUseUsageDescription` to `Info.plist`.
-2. Add `UIBackgroundModes` → `location` to `Info.plist`.
-3. On trip start, request `requestAlwaysAuthorization` (explain to user why).
-4. Register a `CLCircularRegion` with `CLLocationManager.startMonitoring(for:)`.
-5. Handle `locationManager(_:didEnterRegion:)` in `LocationManager` — notify `TripMonitor`.
-6. Fire a `UNUserNotificationCenter` local notification with sound.
-7. Persist active trip state to `UserDefaults` so monitoring survives app restarts.
-8. Test on a real device with location simulation.
-
----
-
-## Phase 5 — Edge Cases & Polish
-
-Tasks:
-1. Permission denied UI — banner linking to Settings if location is denied.
-2. Notification denied fallback — inform user alerts may not work.
-3. Accuracy filter — ignore `CLLocation` updates where `horizontalAccuracy > 100`.
-4. One-shot alert — ensure no repeated alarms for the same trip.
-5. Handle app relaunch mid-trip — restore `TripMonitor` state from `UserDefaults`.
+1. Persist active trip state to `UserDefaults` — restore `TripMonitor` state on app relaunch so monitoring survives force-quit.
+2. In-app foreground alert — show a visible banner + haptic when app is foregrounded at threshold crossing (currently only a local notification fires).
+3. Notification denied fallback — inform user that alerts may not work if notification permission is denied.
 
 ---
 
@@ -105,6 +80,6 @@ Tasks:
 
 - User accounts / cloud sync
 - Route or transit guidance
-- Trip history
+- Full trip history
 - Social/sharing features
 - Custom alarm sounds

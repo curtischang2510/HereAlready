@@ -76,7 +76,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <LocationScenarioReference
-         identifier = "Singapore"
+         identifier = "../../Singapore.gpx"
          referenceType = "0">
       </LocationScenarioReference>
    </LaunchAction>

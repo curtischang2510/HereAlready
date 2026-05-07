@@ -5,6 +5,25 @@ Format: `## [YYYY-MM-DD] — <summary>`
 
 ---
 
+## [2026-05-07] — Recent Searches + Distance Calculation Fix
+
+### Added
+- **Recent searches** — `SearchViewModel` persists the last 10 selected destinations to `UserDefaults` as `[RecentSearch]` (a lightweight `Codable` struct storing name, subtitle, coordinate). Shown in the search panel when the field is focused and empty; tapping a result selects it as destination.
+- **`RecentSearch` struct** — `Codable`, `Identifiable`, `Equatable`; avoids `MKMapItem` non-Codable limitation.
+
+### Fixed
+- **Distance calculation hanging on "Calculating distance…"** — Two root causes fixed:
+  1. `TripMonitor.start()` now immediately seeds `distanceToDestination` using `locationManager.lastKnownLocation`, so the distance displays instantly even when the device hasn't moved since the last GPS update.
+  2. `TripMonitor.update()` accuracy guard relaxed: the `<= 100m` upper bound was removed (only `< 0` is now rejected), allowing simulator GPS and weak-signal real-device readings to pass through.
+
+### Docs
+- `ARCHITECTURE.md` fully rewritten to reflect MapKit migration, AppContainer pattern, and recent searches design.
+- `EXECUTION_PLAN.md` updated: all completed phases marked done; Phase 5 (recent searches) and Phase 6 (polish) added.
+- `DECISIONS.md` updated: Map SDK decision closed; accuracy filter and distance seeding decisions recorded; recent searches storage decision recorded.
+- `PRODUCT_SPEC.md` MVP features list updated to reflect current implementation.
+
+---
+
 ## [2026-05-07] — MapKit Migration + MVP Core Build
 
 ### Added

@@ -1,0 +1,22 @@
+# Xcode
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# CocoaPods (fully deintegrated)
+Pods/
+Podfile.lock
+
+# Swift Package Manager
+.build/
+*.resolved
+
+# macOS
+.DS_Store
+
+# Claude Code session files
+.claude/

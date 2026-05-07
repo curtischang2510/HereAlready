@@ -20,7 +20,11 @@ struct SearchPage: View {
             } else {
                 searchField
                 if searchViewModel.isFocused {
-                    searchResultsList
+                    if searchViewModel.searchText.isEmpty && !searchViewModel.recentSearches.isEmpty {
+                        recentSearchesList
+                    } else {
+                        searchResultsList
+                    }
                 } else if searchViewModel.hasSelectedDestination {
                     destinationConfigView
                 }
@@ -76,6 +80,42 @@ struct SearchPage: View {
         .cornerRadius(13)
         .padding(.horizontal, 16)
         .padding(.bottom, searchViewModel.isFocused || searchViewModel.hasSelectedDestination ? 8 : 12)
+    }
+
+    // MARK: - Recent Searches
+
+    private var recentSearchesList: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Recent")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 4)
+
+            List(searchViewModel.recentSearches) { recent in
+                HStack(spacing: 12) {
+                    Image(systemName: "clock.arrow.circlepath")
+                        .foregroundColor(.secondary)
+                        .font(.body)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(recent.name)
+                            .font(.body)
+                        if !recent.subtitle.isEmpty {
+                            Text(recent.subtitle)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+                .onTapGesture { searchViewModel.selectRecentSearch(recent) }
+            }
+            .listStyle(.plain)
+            .frame(maxHeight: 260)
+        }
     }
 
     // MARK: - Search Results

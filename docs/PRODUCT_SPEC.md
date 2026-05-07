@@ -16,13 +16,17 @@ Allow users to set a destination and receive an alarm when they are within a cus
 7. User dismisses or stops the alert.
 
 ## MVP Features
-- Destination selection
-- Distance threshold selection
+- Destination selection via `MKLocalSearch`
+- Recent searches (top 10, persisted across sessions)
+- Distance threshold selection (300m / 500m / 1km)
 - Start/stop trip monitoring
-- Distance calculation
-- Notification/alarm trigger
-- Permission handling
-- Basic trip state display
+- Live distance display while trip is active
+- Distance calculation via `CLLocation.distance(from:)`
+- Local notification alert trigger on threshold crossing
+- Alert deduplication (fires once per trip)
+- Background monitoring via `CLCircularRegion` geofencing
+- Permission handling (location + notification)
+- Permission denied overlay with Settings deep-link
 
 ## Out of Scope for MVP
 - User accounts
